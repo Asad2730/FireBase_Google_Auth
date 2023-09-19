@@ -10,7 +10,7 @@ function SignIn() {
   const [user, setUser] = useState({
     email: "",
     password: "",
-    age:0,
+    age: 0,
   });
 
 
@@ -18,14 +18,14 @@ function SignIn() {
     await signInWithPopup(auth, provider)
       .then((result) => {
         const userData = result.user;
-         const { displayName, email ,age} = userData;
-         console.log('age IS',age)
-         console.log('email IS',email)
-          //const ag = (age === undefined || age === null) ? -1 : age;
-          localStorage.setItem('age',age)
+        const { displayName, email, age } = userData;
+        console.log('age IS', age)
+        console.log('email IS', email)
+        //const ag = (age === undefined || age === null) ? -1 : age;
+        localStorage.setItem('age', age)
 
-          setUser({ displayName, email,age });
-         localStorage.setItem("email",email);
+        setUser({ displayName, email, age });
+        localStorage.setItem("email", email);
         // Send user data to your Express.js API
         axios
           .post("http://localhost:8090/api/addUser", {
@@ -35,19 +35,19 @@ function SignIn() {
           .then((response) => {
 
             const { age } = response.data
-           localStorage.setItem('age',age)
-            console.log('age is',age)
+            localStorage.setItem('age', age)
+            console.log('age is', age)
             if (age !== undefined) {
               let { email } = response.data;
-              localStorage.setItem("email",email);
-             
-              
+              localStorage.setItem("email", email);
+
+
             } else {
               let { email } = response.data;
               console.log("ok here is", email);
               localStorage.setItem("email", email);
-             
-             
+
+
             }
           })
           .catch((error) => {
@@ -60,23 +60,33 @@ function SignIn() {
   };
 
   useEffect(() => {
-    
-  
+
+
     const age = localStorage.getItem('age')
-   
-    console.log('age3',age)
+
+    console.log('age3', age)
     const emailFromLocalStorage = localStorage.getItem("email");
-    console.log('email',emailFromLocalStorage)
-    if (emailFromLocalStorage) {
+    console.log('email', emailFromLocalStorage)
+
+    console.log('Condition1', Number.isInteger(user.age) && user.age === 0)
+    console.log('Condition2', user.email !== "" && user.age > 0)
+    console.log('Condition3', user.email !== "" && user.age > 0)
+
+    // if (emailFromLocalStorage) 
+    {
       setUser({
         email: emailFromLocalStorage,
         displayName: null,
-        age: age, 
+        age: age,
       });
     }
 
-    console.log('userAge',user.age)
-    console.log('userEmail',user.email)
+    console.log('userAge', user.age)
+    console.log('userEmail', user.email)
+
+    console.log('Condition1', Number.isInteger(user.age) && user.age === 0)
+    console.log('Condition2', user.email !== "" && user.age > 0)
+    console.log('Condition3', user.email !== "" && user.age > 0)
   }, []);
 
 
@@ -92,26 +102,20 @@ function SignIn() {
         justifyContent: "center",
       }}
     >
-      {/* {user.age !== -1 && user.age !== 0 ? (
-        <UserData/>
-      ) : user.age === -1 && user.age !== 0? (
-        <Home />
-      ) : (
-        <Button onClick={handleClick}>Sign in with Google</Button>
-      )} */}
 
-    { 
-     (Number.isInteger(user.age) && user.age === 0)? (
-        // <UserData/> 
-        <Button onClick={handleClick}>Sign in with Google</Button>
-        ) 
-       : user.email !== "" && user.age === 0 ? (
-        <Home /> ) 
-        :(
-         <UserData/>
 
-      )
-    }
+      {
+        Number.isInteger(user.age) && user.age === 0 ?
+          <Button onClick={handleClick}>Sign in with Google</Button>
+
+          : user.email !== "" && user.age === 0
+            ?
+            <Home />
+            :
+            <UserData />
+      }
+
+
     </div>
   );
 }
